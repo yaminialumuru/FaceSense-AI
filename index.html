@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FaceSense AI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+:root{--paper:#FBFAFF;--mist:#EEE9FB;--ink:#2A1740;--soft:#6B5C80;--orchid:#7A3FF2;--glass:#6FD3BF;--glass-d:#0E6B5C;--sun:#FFC24B;--berry:#D6336C;--card:#fff;--line:#DDD5F0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#171024;--mist:#241838;--ink:#F2ECFF;--soft:#B3A5CC;--orchid:#A582FF;--glass:#6FD3BF;--glass-d:#7FE3CF;--card:#1F1531;--line:#3A2C57}}
+:root[data-theme="dark"]{--paper:#171024;--mist:#241838;--ink:#F2ECFF;--soft:#B3A5CC;--orchid:#A582FF;--glass:#6FD3BF;--glass-d:#7FE3CF;--card:#1F1531;--line:#3A2C57}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 Figtree,system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;line-height:1.08;margin:0;letter-spacing:-.02em}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;gap:20px;height:64px}
+.logo{font:800 22px "Bricolage Grotesque",sans-serif;text-decoration:none;display:flex;gap:8px;align-items:center}
+.logo i{width:22px;height:22px;border-radius:50% 50% 50% 8px;background:var(--orchid);display:inline-block}
+.nav nav{margin-left:auto;display:flex;gap:20px}
+.nav nav a{text-decoration:none;color:var(--soft);font-weight:500}
+.nav nav a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 24px;border-radius:999px;border:2px solid var(--ink);background:var(--sun);color:#2A1740;font:600 16px Figtree,sans-serif;text-decoration:none;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:hover{transform:translateY(-1px)}
+.icon{min-height:40px;min-width:40px;padding:0;border-radius:50%;background:var(--mist);border:0;color:var(--ink);cursor:pointer;font-size:18px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:56px 0 64px}
+.hero h1{font-size:clamp(40px,6vw,72px);font-weight:800}
+.hero p{max-width:52ch;color:var(--soft);font-size:19px;margin:20px 0 28px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.stage{background:var(--mist);border-radius:40px 40px 40px 8px;padding:20px;position:relative}
+.stage svg{width:100%;height:auto;display:block}
+.cap{font-size:14px;color:var(--soft);margin:8px 4px 0}
+.chip{position:absolute;background:var(--card);border:2px solid var(--ink);border-radius:999px;padding:4px 14px;font:600 14px Figtree,sans-serif}
+section{padding:64px 0}
+section.tint{background:var(--mist)}
+h2{font-size:clamp(30px,4vw,46px);font-weight:700;max-width:20ch}
+.lead{color:var(--soft);max-width:60ch;margin:12px 0 28px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.tab{min-height:44px;padding:0 20px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);font:600 16px Figtree,sans-serif;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.panel{background:var(--card);border:2px solid var(--line);border-radius:28px;padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.panel[hidden]{display:none}
+.panel h3{font-size:28px;margin-bottom:10px}
+.panel ul{padding-left:20px;color:var(--soft)}
+.signal{background:var(--mist);border-radius:20px;padding:20px;display:grid;gap:12px;align-content:start}
+.sig{display:flex;justify-content:space-between;gap:12px;background:var(--card);border-radius:14px;padding:12px 16px;font-weight:500}
+.sig b{color:var(--glass-d)}
+.sig.warn b{color:var(--berry)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:s}
+.step{background:var(--card);border-radius:24px;padding:24px;border:2px solid var(--line)}
+.step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--glass);color:#12302A;font:800 20px "Bricolage Grotesque",sans-serif;margin-bottom:14px}
+.step p{color:var(--soft);margin:8px 0 0}
+.app{display:grid;grid-template-columns:200px 1fr;border:2px solid var(--ink);border-radius:28px;overflow:hidden;background:var(--card);min-height:380px}
+.side{background:var(--ink);color:var(--paper);padding:16px;display:grid;gap:6px;align-content:start}
+:root[data-theme="dark"] .side,:root:not([data-theme="light"]) .side{--x:1}
+.side button{text-align:left;min-height:44px;border:0;border-radius:12px;background:transparent;color:inherit;font:500 16px Figtree,sans-serif;padding:0 14px;cursor:pointer}
+.side button[aria-current="true"]{background:var(--orchid);color:#fff}
+.main{padding:24px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat{background:var(--mist);border-radius:16px;padding:14px}
+.stat small{color:var(--soft);display:block}
+.stat strong{font:700 26px "Bricolage Grotesque",sans-serif}
+.empty{margin-top:16px;border:2px dashed var(--line);border-radius:20px;padding:32px;text-align:center;color:var(--soft)}
+.empty h3{color:var(--ink);font-size:22px;margin-bottom:6px}
+.cam{margin-top:16px;aspect-ratio:16/9;background:var(--mist);border-radius:20px;display:grid;place-items:center;overflow:hidden;position:relative}
+.cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam .msg{padding:20px;text-align:center;color:var(--soft)}
+.priv{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.priv div{border-left:6px solid var(--glass);padding-left:16px}
+.priv h3{font-size:22px;margin-bottom:6px}
+.priv p{margin:0;color:var(--soft)}
+footer{padding:36px 0 48px;color:var(--soft);font-size:15px;border-top:1px solid var(--line)}
+@media (max-width:820px){.hero,.panel,.steps,.priv{grid-template-columns:1fr}.app{grid-template-columns:1fr}.side{grid-auto-flow:column;overflow-x:auto}.side button{white-space:nowrap}.stats{grid-template-columns:1fr 1fr}.nav nav{display:none}.nav{justify-content:space-between}.icon{margin-left:auto}}
+@media (prefers-reduced-motion:no-preference){.scan{animation:scan 3.2s ease-in-out infinite alternate}@keyframes scan{to{transform:translateY(190px)}}}
+.cam video,.cam canvas{position:absolute;inset:0;width:100%;height:100%}.cam video{transform:scaleX(-1)}.cam .msg{position:relative}.cam{min-height:200px}
+.note{color:var(--soft);font-size:15px;margin:10px 0}.warn{background:var(--berry);color:#fff;border-radius:14px;padding:12px 16px;font-weight:600}
+#views h3{font-size:22px;margin:22px 0 10px}ul.plain{padding-left:20px;color:var(--soft)}.bar{background:var(--mist);border-radius:8px;margin:4px 0;padding:4px 8px;position:relative;font-size:14px}.bar i{display:block;height:6px;border-radius:3px;background:var(--orchid);margin-top:3px}
+table{border-collapse:collapse;width:100%;font-size:15px}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}.mini{min-height:36px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:0 12px;margin-right:6px;cursor:pointer;font:600 14px Figtree,sans-serif}
+#setForm{display:grid;gap:10px;grid-template-columns:1fr 1fr}#setForm label{display:flex;gap:8px;align-items:center}#setForm input[type=number]{width:90px;min-height:36px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:0 8px}select{min-height:36px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+@media (max-width:820px){#setForm{grid-template-columns:1fr}}
+@media print{header,.side,.hero,#modes,#how,#privacy,footer,#camBlock,.row,.stats{display:none!important}}
+.diag{background:var(--mist);border-radius:12px;padding:12px;font:13px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-x:auto;margin:8px 0}summary{cursor:pointer;font-weight:600;min-height:32px}
+.filters{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:8px 0}.filters label{display:flex;gap:6px;align-items:center}.filters input[type=date]{min-height:36px;border-radius:8px;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:0 6px}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:20px}.charts svg{width:100%;max-width:420px;height:auto;color:var(--ink)}#legend div{margin:4px 0}.sw{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px}
+@media (max-width:820px){.charts{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+<a class="logo" href="#top"><i></i>FaceSense AI</a>
+<nav aria-label="Main"><a href="#modes">Modes</a><a href="#how">How it works</a><a href="#app">App preview</a><a href="#privacy">Privacy</a></nav>
+<button class="icon" id="theme" aria-label="Switch light or dark theme">◐</button>
+<a class="btn" href="#app">Start a session</a>
+</div></header>
+
+<main id="top">
+<div class="wrap hero">
+<div>
+<h1>Know when you or your group need a break.</h1>
+<p>FaceSense AI watches for yawns and long eye closure through your own camera, warns you in time, and keeps a clear record of each session. Camera video is analysed on your device and never uploaded.</p>
+<div class="row"><a class="btn" href="#app">Try the camera</a><a class="btn ghost" href="#modes">See the modes</a></div>
+</div>
+<div class="stage" role="img" aria-label="Illustration of a face with landmark points on the eyes and mouth">
+<svg viewBox="0 0 400 300" aria-hidden="true">
+<ellipse cx="200" cy="150" rx="105" ry="130" fill="none" stroke="var(--ink)" stroke-width="3"/>
+<g fill="var(--orchid)"><circle cx="150" cy="120" r="5"/><circle cx="165" cy="114" r="5"/><circle cx="180" cy="120" r="5"/><circle cx="165" cy="126" r="5"/><circle cx="220" cy="120" r="5"/><circle cx="235" cy="114" r="5"/><circle cx="250" cy="120" r="5"/><circle cx="235" cy="126" r="5"/></g>
+<g fill="var(--glass-d)"><circle cx="165" cy="218" r="5"/><circle cx="200" cy="208" r="5"/><circle cx="235" cy="218" r="5"/><circle cx="200" cy="236" r="5"/></g>
+<rect x="95" y="20" width="210" height="260" rx="22" fill="none" stroke="var(--glass-d)" stroke-width="3" stroke-dasharray="14 10"/>
+<rect class="scan" x="95" y="30" width="210" height="4" rx="2" fill="var(--sun)"/>
+</svg>
+<span class="chip" style="left:14px;top:30px;color:var(--orchid)">Eyes open</span>
+<span class="chip" style="right:14px;bottom:70px;color:var(--glass-d)">Mouth closed</span>
+<p class="cap">Illustration. The live app measures these points on your real camera feed.</p>
+</div>
+</div>
+
+<section class="tint" id="modes"><div class="wrap">
+<h2>Pick what you need today</h2>
+<p class="lead">Each mode uses the same engine and a different set of tools. Choose one to see what it does.</p>
+<div class="tabs" role="tablist" aria-label="Monitoring modes">
+<button class="tab" role="tab" aria-selected="true" aria-controls="p0" id="t0">Driver Mode</button>
+<button class="tab" role="tab" aria-selected="false" aria-controls="p1" id="t1">Study Mode</button>
+<button class="tab" role="tab" aria-selected="false" aria-controls="p2" id="t2">Expressions</button>
+</div>
+<div class="panel" role="tabpanel" id="p0" aria-labelledby="t0"><div><h3>Driver Mode</h3><p>Stay alert on long drives. A siren sounds when yawns or eye closure last longer than your limits.</p><ul><li>Test the siren before you drive</li><li>Set volume, limits and cooldown</li><li>Every alert is saved with a time</li></ul></div><div class="signal"><div class="sig">Eye closure <b>Shown live in Driver mode</b></div><div class="sig">Yawn <b>Shown live in Driver mode</b></div><div class="sig warn">Alert <b>Sounds on a real warning</b></div></div></div>
+<div class="panel" role="tabpanel" id="p1" aria-labelledby="t1" hidden><div><h3>Study Mode</h3><p>A consent-based group session on one screen. Each face gets a box: green for fine, red for a warning, gray when unsure.</p><ul><li>Temporary track IDs, never names</li><li>Summary at the end of every session</li><li>Smiling or not never counts against anyone</li></ul></div><div class="signal"><div class="sig">Green box <b>Shown live in Study mode</b></div><div class="sig warn">Red box <b>Warning active</b></div><div class="sig">Gray box <b>Unsure or face lost</b></div></div></div>
+<div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" hidden><div><h3>Expression analysis</h3><p>See which facial expression the model predicts and how sure it is. These are estimates of how a face looks, not of how someone feels.</p><ul><li>Happy, sad, angry, neutral, surprised, fearful, disgusted</li><li>Adjustable confidence limit</li><li>Charts built only from real predictions</li></ul></div><div class="signal"><div class="sig">Prediction <b>None yet</b></div><div class="sig">Confidence <b>None yet</b></div><div class="sig">Model <b>Loads when you press Start</b></div></div></div>
+</div></section>
+
+<section id="how"><div class="wrap">
+<h2>Three steps, no setup headaches</h2>
+<p class="lead">From first click to first report in a couple of minutes.</p>
+<div class="steps">
+<div class="step"><h3>Allow your camera</h3><p>You choose when it starts and stops. Nothing runs in the background.</p></div>
+<div class="step"><h3>Start a mode</h3><p>The face is measured on your device. Only small event notes are saved.</p></div>
+<div class="step"><h3>Review your report</h3><p>See events, charts and alerts. Export a CSV or print the report.</p></div>
+</div></div></section>
+
+<section class="tint" id="app"><div class="wrap">
+<h2>Your workspace</h2>
+<p class="lead">Pick a page in the sidebar and press Start monitoring. Numbers come only from your own sessions.</p>
+<div class="app">
+<div class="side" role="navigation" aria-label="App">
+<button aria-current="true">Dashboard</button><button>Driver Mode</button><button>Study Mode</button><button>Expressions</button><button>Emotion Distribution</button><button>Behavior Analytics</button><button>Settings</button>
+</div>
+<div class="main">
+<div class="stats"><div class="stat"><small>Faces now</small><strong id="st-faces">0</strong></div><div class="stat"><small>Yawns</small><strong id="st-yawn">0</strong></div><div class="stat"><small>Drowsy or long closures</small><strong id="st-drowsy">0</strong></div><div class="stat"><small>Alerts</small><strong id="st-alert">0</strong></div></div>
+<div id="camBlock">
+<div class="cam" id="cam"><video id="vid" playsinline muted hidden></video><canvas id="ov"></canvas><div class="msg" id="camMsg">Your camera is off.<br>Press Start to open it. The video stays on this device.</div></div>
+<div class="row" style="margin-top:14px;align-items:center"><button class="btn" id="btnStart">Start monitoring</button><button class="btn ghost" id="btnPause" hidden>Pause</button><button class="btn ghost" id="btnStop" hidden>Stop</button><span id="timer" style="font-weight:600">00:00</span></div>
+<p class="note" id="status" role="status" aria-live="polite">Camera is off.</p>
+<p class="note" id="modelState">Models load when you press Start.</p>
+<div class="warn" id="warn" role="alert" hidden></div>
+</div>
+<div id="views">
+<div id="v-dashboard"><div class="signal"><div class="sig">Current state <b id="dash-state">–</b></div><div class="sig">Latest expression prediction <b id="dash-emo">–</b></div></div><h3>Recent sessions</h3><ul id="dash-list" class="plain"></ul>
+<div class="row"><button class="btn ghost" data-go="driver">Driver Mode</button><button class="btn ghost" data-go="study">Study Mode</button><button class="btn ghost" data-go="expr">Expressions</button><button class="btn ghost" data-go="dist">Emotion Distribution</button></div></div>
+<div id="v-driver" hidden><h3>Driver Mode</h3><div class="signal"><div class="sig">State <b id="d-state">–</b></div><div class="sig">Eye openness (EAR) <b id="d-ear">–</b></div><div class="sig">Mouth opening (MAR) <b id="d-mar">–</b></div><div class="sig">Eyes closed share <b id="d-perclos">–</b></div><div class="sig">Expression (separate from state) <b id="d-emo">–</b></div><div class="sig">Automatic alert <b id="d-alert">–</b></div><div class="sig">Audio <b id="d-audio">–</b></div><div class="sig">Alert cooldown <b id="d-cool">–</b></div></div>
+<h3>Siren</h3><div class="row" style="align-items:center"><button class="btn ghost" id="audioOn">Enable audio</button><button class="btn ghost" id="sirenTest">Test siren</button><button class="btn ghost" id="sirenStop">Stop siren</button><label>Volume <input type="range" id="vol" min="0" max="1" step="0.05" aria-label="Siren volume"></label></div><p class="note" id="audioState">Audio is off. Your browser needs a click before it plays sound.</p>
+<h3>Recent events</h3><ul id="d-events" class="plain"></ul><details open><summary>Development diagnostics</summary><pre id="diag-pre" class="diag">Start monitoring to see live values.</pre></details><p class="note">Academic prototype. Not a certified automotive safety system. Results are estimates, not medical diagnoses.</p></div>
+<div id="v-study" hidden><h3>Study Mode</h3><p class="note">Use only with the consent of everyone in view. Box colours: green means no warning, red means a drowsiness or sustained-yawn warning, gray means unsure or no face. Face numbers are temporary and are not identities.</p><div class="signal"><div class="sig">Main face state <b id="s-state">–</b></div></div><h3>Event timeline</h3><ul id="s-events" class="plain"></ul><h3>Session summary</h3><p class="note" id="sum-last">No finished session yet.</p></div>
+<div id="v-expr" hidden><h3>Expression analysis</h3><p class="note">The model predicts how a face looks. It cannot tell what a person feels. The FER+ model also has a “contempt” class.</p><div class="signal"><div class="sig">Prediction <b id="x-emo">–</b></div></div><div id="x-bars"></div><h3>Recent predictions</h3><ul id="x-hist" class="plain"></ul></div>
+<div id="v-dist" hidden><h3>Emotion Distribution</h3><p class="note">Counts of facial-expression predictions from the model. They describe how faces looked, not how people feel.</p>
+<div class="filters"><label>Session <select id="f-session"></select></label><label>From <input type="date" id="f-from"></label><label>To <input type="date" id="f-to"></label><label><input type="checkbox" id="f-unc"> Include uncertain</label></div><div id="f-cats" class="filters"></div>
+<div class="empty" id="dist-empty"><h3>No predictions yet</h3><p>Open Expressions, Driver Mode or Study Mode, press Start monitoring, then Stop to save the session. Your predictions will be charted here.</p></div>
+<div id="dist-body" hidden><div class="stats" style="grid-template-columns:1fr 2fr"><div class="stat"><small>Total predictions</small><strong id="dist-total">0</strong></div><div class="stat"><small>Most frequent expression</small><strong id="dist-top">–</strong></div></div><p class="note" id="dist-note"></p>
+<div class="charts"><div><h3>Share of predictions</h3><svg id="pie" viewBox="0 0 200 200" role="img" aria-label="Pie chart of expression predictions"></svg><div id="legend"></div></div><div><h3>Prediction counts</h3><svg id="bars" viewBox="0 0 400 200" role="img" aria-label="Bar chart of expression predictions"></svg></div></div>
+<h3>By session</h3><div style="overflow-x:auto"><table><thead><tr><th>Started</th><th>Mode</th><th>Predictions</th><th>Most frequent</th></tr></thead><tbody id="dist-per"></tbody></table></div></div></div>
+<div id="v-behavior" hidden><h3>Behavior Analytics</h3><p class="note">Yawn and drowsiness events are estimates from facial measurements, not medical findings. Nothing here measures attention or productivity.</p>
+<div class="stats"><div class="stat"><small>Yawn events</small><strong id="b-yawn">0</strong></div><div class="stat"><small>Drowsiness events</small><strong id="b-drowsy">0</strong></div><div class="stat"><small>Alerts</small><strong id="b-alerts">0</strong></div><div class="stat"><small>Monitored time</small><strong id="b-time">0 min</strong></div></div>
+<div class="row" style="align-items:center;margin-top:12px"><label>Mode <select id="r-filter"><option value="">All</option><option value="driver">Driver</option><option value="study">Study</option><option value="expr">Expressions</option><option value="general">General</option></select></label><button class="btn ghost" id="r-csv">Export events CSV</button><button class="btn ghost" id="r-csv2">Export predictions CSV</button><button class="btn ghost" id="r-clear">Delete all</button></div><p class="note" id="r-msg"></p>
+<div class="empty" id="b-empty"><h3>No sessions yet</h3><p>Start monitoring, then press Stop to save a session. Events and alerts will be charted here.</p></div>
+<div id="b-body" hidden><h3>Events per session (latest 10)</h3><svg id="b-chart" viewBox="0 0 440 175" role="img" aria-label="Bar chart of yawn, drowsiness and alert counts per session"></svg><p class="note"><span class="sw" style="background:#7A3FF2"></span> yawns &nbsp; <span class="sw" style="background:#D6336C"></span> drowsiness &nbsp; <span class="sw" style="background:#FFC24B"></span> alerts</p>
+<h3>Session history</h3><div style="overflow-x:auto"><table id="r-table"><thead><tr><th>Started</th><th>Mode</th><th>Length</th><th>Yawns</th><th>Drowsiness</th><th>Alerts</th><th></th></tr></thead><tbody id="r-body"></tbody></table></div><div id="r-detail" hidden></div></div></div>
+<div id="v-settings" hidden><h3>Settings</h3><form id="setForm" onsubmit="return false"></form><div class="row"><button class="btn" id="setSave">Save settings</button><button class="btn ghost" id="setReset">Restore defaults</button></div><p class="note" id="setMsg" role="status"></p><p class="note">Saved in this browser only. Sessions are kept in this browser for the number of days above, then deleted.</p></div>
+</div>
+</div></div>
+</div></section>
+
+<section id="privacy"><section id="privacy"><div class="wrap">
+<h2>Built to be trusted</h2>
+<p class="lead">Predictions are estimates. They cannot tell what a person truly feels, and they are not a medical or safety certification.</p>
+<div class="priv">
+<div><h3>On your device</h3><p>Camera video and face analysis stay in your browser.</p></div>
+<div><h3>Saved by choice</h3><p>Event times and counts are saved in this browser only, and you can turn that off. No video is kept.</p></div>
+<div><h3>You stay in control</h3><p>Consent comes first, and you can delete your data at any time.</p></div>
+</div></div></section>
+</main>
+<footer><div class="wrap">FaceSense AI is an academic prototype, not a certified automotive or security system. Expression results should never be the only basis for decisions about people.</div></footer>
+
+<script>
+(function(){
+var root=document.documentElement,tb=document.getElementById('theme');
+tb.onclick=function(){var d=root.getAttribute('data-theme')==='dark'||(!root.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches);root.setAttribute('data-theme',d?'light':'dark')};
+var tabs=[].slice.call(document.querySelectorAll('.tab'));
+function pick(i){tabs.forEach(function(t,j){t.setAttribute('aria-selected',j===i);document.getElementById('p'+j).hidden=j!==i});tabs[i].focus()}
+tabs.forEach(function(t,i){t.onclick=function(){pick(i)};t.onkeydown=function(e){if(e.key==='ArrowRight')pick((i+1)%tabs.length);if(e.key==='ArrowLeft')pick((i+tabs.length-1)%tabs.length)}});
+})();
+</script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

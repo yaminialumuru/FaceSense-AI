@@ -1,0 +1,1 @@
+{"name":"facesense-ai","version":"1.0.0","type":"module","scripts":{"test":"node --test","start":"npx --yes http-server -p 8080 -c-1 ."}}
